@@ -1,0 +1,290 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+                           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd
+                           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+                           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+
+	<bean id="systemTest" class="com.tecnotree.stf.main.SystemTest">
+		<property name="inputConfigDataMap" ref="inputConfigDataMaps" />
+		<property name="systemTestConfig" ref="SYSTEM_TEST_CONFIG_MAP"/>
+	</bean>
+	
+	<util:map id="SYSTEM_TEST_CONFIG_MAP">
+		<entry key="STF_CONFIG" value-ref="STF_CONFIG_MAP"></entry>
+		<entry key="MOCK_CONFIG" value-ref="MOCK_CONFIG_MAP"></entry>
+	</util:map>
+	
+	<util:map id="STF_CONFIG_MAP">
+		<entry key="hostname" value="172.20.43.48"></entry>
+		<entry key="portNo" value="8080"></entry>
+		<entry key="service" value="/cap-dataservice/rest/dataservice"></entry>
+		<entry key="tenantId" value="1"></entry>
+		<entry key="productName" value="CLM"></entry>
+		<entry key="version" value="1"></entry>
+	</util:map>
+	
+	<util:map id="MOCK_CONFIG_MAP">
+		<entry key="hostname" value="localhost"></entry>
+		<entry key="portNo" value="9051"></entry>
+		<entry key="service" value="/Mock/cap-dataservice/rest/dataservice"></entry>
+		<entry key="tenantId" value="1"></entry>
+		<entry key="productName" value="MOCK"></entry>
+		<entry key="version" value="1/MOCK"></entry>
+	</util:map>
+
+	<util:map id="inputConfigDataMaps">
+		<entry key="REGISTRATION_CONFIG" value-ref="REGISTRATION_CONFIG_MAP"></entry>
+	</util:map>
+	
+	<util:map id="REGISTRATION_CONFIG_MAP">
+		<entry key="productName" value="PostpaidRegistration"></entry>
+		<entry key="iteration" value="2"></entry>
+		<entry key="apiSequence" value-ref="apiSequenceList"></entry>
+		<entry key="ConfirmRetailPostpaidRegistration" value-ref="ConfirmRetailPostpaidRegistrationMap"></entry>
+		<entry key="MakeRegistrationPayment" value-ref="MakeRegistrationPaymentMap"></entry>
+		<!-- <entry key="status" value-ref="statusMap"></entry> -->
+	</util:map>
+	
+	<!-- <util:map id="statusMap">
+		<entry key="ConfirmRetailPostpaidRegistration" value="confirmRetailPostpaidRegistrationResponse.status:success"></entry>
+		<entry key="MakeRegistrationPayment" value="makePaymentResponse.status:success"></entry>
+	</util:map> -->
+	
+	<!-- operation - content type - api name - keyname:apiname:valuepath -->
+	<util:list id="apiSequenceList">
+		<value>Read-mock-getSimNumber-NA</value>
+		<value>Read-mock-getImsiNumber-NA</value>
+		<value>Read-mock-getMobileNumber-NA</value> 
+		<value>Create-json-ConfirmRetailPostpaidRegistration-serviceRequest.customer.services.service.serviceDetails.simDetails.simNumber:getSimNumber:simNumber,serviceRequest.customer.services.service.serviceDetails.simDetails.imsiNumber:getImsiNumber:imsiNumber,serviceRequest.customer.services.service.serviceDetails.simDetails.serviceNumber:getMobileNumber:mobileNumber</value>
+		<value>Create-json-MakeRegistrationPayment-makePayment.serviceRequestId:ConfirmRetailPostpaidRegistration:response.body.serviceRequestId</value>
+		<value>Read-json-ServiceRequestDetailsJson_json-doucmentId:ConfirmRetailPostpaidRegistration:response.body.id</value>
+		<value>Create-xml-ActivationCallBackRequest-orderNumber:ServiceRequestDetailsJson_json:serviceRequest.orderNumber,serviceCode:ServiceRequestDetailsJson_json:serviceRequest.customer.services.service.serviceCode</value>
+	 </util:list>
+	
+	<util:map id="ConfirmRetailPostpaidRegistrationMap">
+		<entry key="fileName" value="ConfirmRetailPostpaidReg"></entry>
+		<entry key="serviceRequest.customer.profileDetails.basicDetails.firstName" value="Tecnotree3_unique_id"></entry>
+		<entry key="serviceRequest.customer.profileDetails.basicDetails.lastName" value="Private3_unique_id"></entry>
+		<entry key="serviceRequest.customer.profileDetails.customerSubCategory" value="SSC00001--SSC00002"></entry>
+		<entry key="serviceRequest.customer.services.service">
+			<value>
+				{
+  "service": [
+    {
+      "serviceDetails": {
+        "serviceStatus": {
+          "masterCode": "PENREG"
+        },
+        "activatedVia": {
+          "masterCode": "D"
+        },
+        "serviceType": {
+          "masterCode": "GSM"
+        },
+        "subServiceType": {
+          "masterCode": "Voice"
+        },
+        "technology": {
+          "masterCode": "GSM"
+        },
+        "businessType": {
+          "masterCode": "Postpaid"
+        },
+        "simDetails": {
+          "simNumber": "9999932323000340604",
+          "simCategory": {
+            "masterCode": "NS"
+          },
+          "imsiNumber": "932323000340604"
+        },
+        "serviceNumber": "2222065160",
+        "serviceNumberCategory": {
+          "masterCode": "NORM3"
+        },
+        "contractDetails": {
+          "startDate": {
+            "$date": "2015-03-20T07:04:43.809Z"
+          },
+          "endDate": {
+            "$date": "9999-12-31T00:00:00.000Z"
+          }
+        },
+        "registrationDetails": {
+          "userDetails": {
+            "loginName": "test",
+            "userName": "Soham Dalvi"
+          },
+          "salesChannel": {
+            "masterCode": "CLM"
+          }
+        }
+      },
+      "serviceUser": {
+        "profileDetails": {
+          "basicDetails": {
+            "firstName": "Sourav",
+            "lastName": "Singh",
+            "gender": {
+              "masterCode": "M"
+            },
+            "dateOfBirth": {
+              "$date": "1991-10-09T18:30:00.000Z"
+            }
+          },
+          "notificationDetails": {
+            "preferredLanguage": {
+              "masterCode": "French"
+            },
+            "preferredMedium": {
+              "emailId": "nirbhay.gupta@tecnotree.com",
+              "faxNo": "33333333333",
+              "mobileNo": "44444444444",
+              "landlinePhoneNo": "44444444444"
+            }
+          },
+          "identificationDetails": {
+            "identificationDetail": [
+              {
+                "idType": {
+                  "masterCode": "Passport"
+                },
+                "idNumber": "dfgdf"
+              }
+            ]
+          }
+        }
+      },
+      "offerings": {
+        "offering": [
+          {
+            "code": "PREN200",
+            "version": "1.0",
+            "offeringType": {
+              "masterCode": "Plan"
+            },
+            "serviceIndex": "530512"
+          }
+        ]
+      },
+      "accountIndex": "530512",
+      "serviceIndex": "530512"
+    },
+    {
+      "serviceDetails": {
+        "serviceStatus": {
+          "masterCode": "PENREG"
+        },
+        "activatedVia": {
+          "masterCode": "D"
+        },
+        "serviceType": {
+          "masterCode": "GSM"
+        },
+        "subServiceType": {
+          "masterCode": "Voice"
+        },
+        "technology": {
+          "masterCode": "GSM"
+        },
+        "businessType": {
+          "masterCode": "Postpaid"
+        },
+        "simDetails": {
+          "simNumber": "9999932323000340604",
+          "simCategory": {
+            "masterCode": "NS"
+          },
+          "imsiNumber": "932323000340604"
+        },
+        "serviceNumber": "2222065160",
+        "serviceNumberCategory": {
+          "masterCode": "NORM3"
+        },
+        "contractDetails": {
+          "startDate": {
+            "$date": "2015-03-20T07:04:43.809Z"
+          },
+          "endDate": {
+            "$date": "9999-12-31T00:00:00.000Z"
+          }
+        },
+        "registrationDetails": {
+          "userDetails": {
+            "loginName": "test",
+            "userName": "Soham Dalvi"
+          },
+          "salesChannel": {
+            "masterCode": "CLM"
+          }
+        }
+      },
+      "serviceUser": {
+        "profileDetails": {
+          "basicDetails": {
+            "firstName": "Sourav",
+            "lastName": "Singh",
+            "gender": {
+              "masterCode": "M"
+            },
+            "dateOfBirth": {
+              "$date": "1991-10-09T18:30:00.000Z"
+            }
+          },
+          "notificationDetails": {
+            "preferredLanguage": {
+              "masterCode": "French"
+            },
+            "preferredMedium": {
+              "emailId": "nirbhay.gupta@tecnotree.com",
+              "faxNo": "33333333333",
+              "mobileNo": "44444444444",
+              "landlinePhoneNo": "44444444444"
+            }
+          },
+          "identificationDetails": {
+            "identificationDetail": [
+              {
+                "idType": {
+                  "masterCode": "Passport"
+                },
+                "idNumber": "dfgdf"
+              }
+            ]
+          }
+        }
+      },
+      "offerings": {
+        "offering": [
+          {
+            "code": "PREN200",
+            "version": "1.0",
+            "offeringType": {
+              "masterCode": "Plan"
+            },
+            "serviceIndex": "530512"
+          }
+        ]
+      },
+      "accountIndex": "530512",
+      "serviceIndex": "530512"
+    }
+  ]
+}
+			</value>
+		</entry>
+	</util:map>
+	
+	<util:map id="MakeRegistrationPaymentMap">
+		<entry key="fileName" value="MakeRegPayment"></entry>
+		<entry key="makePayment.paymentDetails.userDetails.userName" value="userName_unique_id"></entry> 
+		<entry key="makePayment.paymentDetails.paymentMethod">
+			<value>
+				{"paymentMethod":[{ "masterCode": "CASH", "amountPaid": 510,  "currency": {"masterCode": "Franc"}}]} --
+				{ "paymentMethod": [ {"masterCode": "PAIDINBANK","amountPaid": 100, "currency": { "masterCode": "Franc"},
+				"paidinBankDetails": {"bankAccountNumber": "98262612","paymentDate": { "$date": "2015-05-31T18:30:00.000Z"},"acknowledgmentNumber": "646594", "bank": { "masterCode": "ICICI"}}}]}
+			</value>
+		</entry>
+	</util:map>
+</beans>
